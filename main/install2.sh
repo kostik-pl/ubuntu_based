@@ -76,12 +76,13 @@ chown -R postgres:postgres /_data/pg_data
 chmod -R 700 /_data/pg_data
 
 #Add FIREWALLD rule for POSTGRESQL
-firewall-cmd --permanent --zone=public --add-service=postgresql
-firewall-cmd --reload
+#firewall-cmd --permanent --zone=public --add-service=postgresql
+#firewall-cmd --reload
 
 #Start POSTGRESPRO container
 #Change the image name to the desired image. Example kostikpl/ol9:pgpro_1c_13 > kostikpl/rhel8:pgpro_std_13
 HOSTNAME=`hostname`
+apt install --yes podman
 podman run --name pgpro  --hostname $HOSTNAME -dt -p 5432:5432 -v /_data:/_data docker.io/kostikpl/ol9:pgpro_1c_13
 podman generate systemd --new --name pgpro > /etc/systemd/system/pgpro.service
 systemctl enable --now pgpro
@@ -89,4 +90,4 @@ PG_PASSWD='RheujvDhfub72'
 podman exec -ti pgpro psql -c "ALTER USER postgres WITH PASSWORD '$PG_PASSWD';"
 
 #Clean
-dnf clean all
+#dnf clean all
