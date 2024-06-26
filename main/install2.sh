@@ -55,7 +55,6 @@ chmod -R 700 /_data/pg_data
 #Start POSTGRESPRO container
 #Change the image name to the desired image. Example kostikpl/ol9:pgpro_1c_13 > kostikpl/rhel8:pgpro_std_13
 HOSTNAME=`hostname`
-apt install --yes podman
 podman run --name pgpro  --hostname $HOSTNAME -dt -p 5432:5432 -v /_data:/_data docker.io/kostikpl/ubuntu_22.04:pgpro_std_13
 podman generate systemd --new --name pgpro > /etc/systemd/system/pgpro.service
 systemctl enable --now pgpro
