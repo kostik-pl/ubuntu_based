@@ -17,7 +17,6 @@ apt full-upgrade --yes
 
 #apt install --yes krb5-user
 apt install --yes mc
-apt install --yes podman
 
 #Reboot
 reboot

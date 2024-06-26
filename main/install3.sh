@@ -1,36 +1,31 @@
 #!/bin/bash
 
-# install 1C Enterprise server requirements from custom packages
-curl -LJO https://raw.githubusercontent.com/kostik-pl/rhel8-public/main/SRV1C_host/msttcorefonts-2.5-1.noarch.rpm
-dnf localinstall -y msttcorefonts-2.5-1.noarch.rpm
+#Install PODMAN
+apt install --yes podman 
 
-# install 1C Enterprise requirements from repositories
-dnf install -y libpng12 #fontconfig libgsf freetype glib2 bzip2
+#Add POSTGRES GROUP and USER same as in container
+groupadd -r postgres --gid=9999
+useradd -r -M -g postgres --uid=9999 postgres
 
-# install 1C Enterprise server packages from work dir
-#Download form GOOGLE
-filename="setup-full-8.3.21.1302-x86_64.run"
-fileid="1-a8DWtOLPhGgpow92x6ziFYPCE4lXlOc"
-html=`curl -c ./cookie -s -L "https://drive.google.com/uc?export=download&id=${fileid}"`
-curl -Lb ./cookie "https://drive.google.com/uc?export=download&`echo ${html}|grep -Po '(confirm=[a-zA-Z0-9\-_]+)'`&id=${fileid}" -o ${filename}
-#Donload from DROPBOX
-#curl -LJO https://www.dropbox.com/s/88q19pt9of2qok0/setup-full-8.3.20.1789-x86_64.run?dl=0
-chmod +x setup-full-8.3.21.1302-x86_64.run
-#ATTENTION! Batch installation will always install the 1c client and, if missing, the trimmed GNOME
-#./setup-full-8.3.20.1789-x86_64.run --mode unattended --enable-components server,server_admin,ws,uk,ru
-#We use pre-installed GNOME and manual installation
-./setup-full-8.3.21.1302-x86_64.run
+#Change access rights
+if [ ! -d "/_data/pg_backup" ] ; then
+    mkdir /_data/pg_backup
+fi
+if [ ! -d "/_data/pg_data" ] ; then
+    mkdir /_data/pg_data
+fi
+chown -R root:root /_data
+chmod -R 777 /_data
+chown -R postgres:postgres /_data/pg_backup
+chmod -R 777 /_data/pg_backup
+chown -R postgres:postgres /_data/pg_data
+chmod -R 700 /_data/pg_data
 
-sed -i 's/Environment=SRV1CV8_DEBUG=/Environment=SRV1CV8_DEBUG=-debug/' /opt/1cv8/x86_64/8.3.21.1302/srv1cv8-8.3.21.1302@.service
-sed -i 's/Environment=SRV1CV8_DATA=\/home\/usr1cv8\/.1cv8\/1C\/1cv8/Environment=SRV1CV8_DATA=\/_data\/srv1c_inf_log/' /opt/1cv8/x86_64/8.3.21.1302/srv1cv8-8.3.21.1302@.service
-
-systemctl link /opt/1cv8/x86_64/8.3.21.1302/srv1cv8-8.3.21.1302@.service
-systemctl link /opt/1cv8/x86_64/8.3.21.1302/ras-8.3.21.1302.service
-systemctl enable srv1cv8-8.3.21.1302@default
-systemctl enable ras-8.3.21.1302
-systemctl start srv1cv8-8.3.21.1302@default
-systemctl start ras-8.3.21.1302
-
-
-#mkdir /etc/systemd/system/srv1cv8-8.3.21.1302@current.service.d
-#cp override.conf /etc/systemd/system/srv1cv8-8.3.21.1302@current.service.d/
+#Start POSTGRESPRO container
+#Change the image name to the desired image. Example kostikpl/ol9:pgpro_1c_13 > kostikpl/rhel8:pgpro_std_13
+HOSTNAME=`hostname`
+podman run --name pgpro  --hostname $HOSTNAME -dt -p 5432:5432 -v /_data:/_data docker.io/kostikpl/ubuntu_22.04:pgpro_std_13
+podman generate systemd --new --name pgpro > /etc/systemd/system/pgpro.service
+systemctl enable --now pgpro
+PG_PASSWD='RheujvDhfub72'
+podman exec -ti pgpro psql -c "ALTER USER postgres WITH PASSWORD '$PG_PASSWD';"
