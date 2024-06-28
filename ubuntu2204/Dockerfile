@@ -16,9 +16,11 @@ ENV PGDATA=/_data/pg_data
 #Explicitly set user/group IDs and data dir
 RUN groupadd -r postgres --gid=9999 ; \
     useradd -r -g postgres --uid=9999 postgres ; \
-    mkdir -p $PGDATA ; \
-    chown -R postgres:postgres $PGDATA ; \
-    chmod 700 $PGDATA
+    if [ ! -d "/_data/pg_backup" ] ; then \
+		mkdir -p $PGDATA ; \
+		chown -R postgres:postgres $PGDATA ; \
+		chmod 700 $PGDATA ; \
+	fi
 
 #Install curl & wget
 RUN DEBIAN_FRONTEND=noninteractive apt-get install --yes curl

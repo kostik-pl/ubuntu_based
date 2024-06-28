@@ -15,16 +15,16 @@ if [ ! -d "/_data/pg_data" ] ; then
     mkdir /_data/pg_data
 fi
 chown -R root:root /_data
-chmod -R 777 /_data
+chmod -R 770 /_data
 chown -R postgres:postgres /_data/pg_backup
-chmod -R 777 /_data/pg_backup
+chmod -R 770 /_data/pg_backup
 chown -R postgres:postgres /_data/pg_data
 chmod -R 700 /_data/pg_data
 
 #Start POSTGRESPRO container
 #Change the image name to the desired image. Example kostikpl/ol9:pgpro_1c_13 > kostikpl/rhel8:pgpro_std_13
 HOSTNAME=`hostname`
-podman run --name pgpro  --hostname $HOSTNAME -dt -p 5432:5432 -v /_data:/_data docker.io/kostikpl/ubuntu_22.04:pgpro_std_13
+podman run --name pgpro --hostname $HOSTNAME -dt -p 5432:5432 -v /_data:/_data docker.io/kostikpl/rhel8:pgpro-13.4.1_rhel-ubi-8.4
 podman generate systemd --new --name pgpro > /etc/systemd/system/pgpro.service
 systemctl enable --now pgpro
 PG_PASSWD='RheujvDhfub72'
