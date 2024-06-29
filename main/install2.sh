@@ -7,12 +7,12 @@ DISK1="/dev/disk/by-label/_data /_data auto nosuid,nodev,nofail,x-gvfs-show 0 0"
 if [ ! -L "$FILE1" ]
 then
     echo "Disk labeled as $FILE1 not found"
-    read -p "Continue? " -n 1 -r
-    if [[ $REPLY =~ ^[Nn]$ ]]
-    then
-        exit 1
-    fi
-    echo -e "\n"
+    read -p "Continue [y/N]? " -n 1 -r
+	echo
+	case $REPLY in 
+		[yY] ) echo ok, we will proceed...; break;;
+		* ) echo exiting...; exit 1;;
+	esac
 else
     echo "Disk labeled as $FILE1 found"
     if ! grep -q '/_data' /etc/fstab

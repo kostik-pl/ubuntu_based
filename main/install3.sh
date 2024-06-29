@@ -19,7 +19,7 @@ chmod -R 770 /_data
 chown -R postgres:postgres /_data/pg_backup
 chmod -R 770 /_data/pg_backup
 chown -R postgres:postgres /_data/pg_data
-chmod -R 700 /_data/pg_data
+chmod -R 770 /_data/pg_data
 
 #Start POSTGRESPRO container
 #Change the image name to the desired image. Example kostikpl/ol9:pgpro_1c_13 > kostikpl/rhel8:pgpro_std_13
@@ -29,3 +29,5 @@ podman generate systemd --new --name pgpro > /etc/systemd/system/pgpro.service
 systemctl enable --now pgpro
 PG_PASSWD='RheujvDhfub72'
 podman exec -ti pgpro psql -c "ALTER USER postgres WITH PASSWORD '$PG_PASSWD';"
+#srv1c_PASSWD = '\$GitybwZ - ZxvtyM\$' # $GitybwZ - ZxvtyM$
+#podman exec -ti pgpro psql -c "ALTER USER srv1c WITH PASSWORD '$srv1c_PASSWD';"
