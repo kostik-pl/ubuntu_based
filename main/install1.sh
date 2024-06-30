@@ -15,7 +15,7 @@ sudo update-grub
 apt update --yes
 apt full-upgrade --yes
 
-apt install --yes mc
+apt install --yes mc tmux htop iftop iotop
 read -p "Check packet for manual update later. Press enter to continue"
 
 #Umcoment if want join AD doamin
