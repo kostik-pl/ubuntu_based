@@ -19,7 +19,7 @@ apt install --yes mc
 read -p "Check packet for manual update later. Press enter to continue"
 
 #Umcoment if want join AD doamin
-#apt install --yes krb5-user realmd libnss-sss libpam-sss sssd sssd-tools adcli samba-common-bin oddjob oddjob-mkhomedir packagekit
+#apt install --yes krb5-user realmd libnss-sss libpam-sss sssd sssd-krb5 sssd-tools adcli samba-common-bin oddjob oddjob-mkhomedir packagekit
 #realm join -v kernel.local
 #pam-auth-update --enable mkhomedir
 
