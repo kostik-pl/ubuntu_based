@@ -7,8 +7,10 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get upgrade --yes
 #Add locales
 RUN DEBIAN_FRONTEND=noninteractive apt-get install --yes locales
 RUN locale-gen uk_UA.UTF-8
+RUN locale-gen ru_RU.UTF-8
 RUN update-locale
-ENV LANG=uk_UA.UTF-8
+ENV LANG uk_UA.UTF-8
+ENV LC_ALL uk_UA.UTF-8
 
 #Set POSTGRES variables
 ENV PGDATA=/_data/pg_data
