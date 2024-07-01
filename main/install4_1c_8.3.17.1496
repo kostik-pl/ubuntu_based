@@ -1,7 +1,9 @@
 #!/bin/bash
 
 # install 1C Enterprise server requirements from custom packages
-apt install --yes ttf-mscorefonts-installer
+#apt install --yes ttf-mscorefonts-installer
+curl -LJO https://raw.githubusercontent.com/kostik-pl/ubuntu_based/main/main/msttcorefonts.tar.gz
+tar -xf msttcorefonts.tar.gz -C /usr/share/fonts/truetype/msttcorefonts/
 fc-cache –fv
 
 # install 1C Enterprise requirements from repositories
